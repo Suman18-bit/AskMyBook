@@ -1,0 +1,299 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+    --bg-base: #0A0A0F;
+    --bg-surface: #13131A;
+    --bg-surface-hover: #1A1A24;
+    --border-subtle: #1F1F2B;
+    --accent-purple: #A855F7;
+    --accent-purple-dim: rgba(168, 85, 247, 0.15);
+    --accent-purple-glow: rgba(168, 85, 247, 0.35);
+    --text-primary: #E4E4EA;
+    --text-secondary: #8B8B9E;
+    --text-muted: #55556A;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+}
+
+/* --- Global app shell --------------------------------------------- */
+.stApp {
+    background-color: var(--bg-base);
+    font-family: var(--font-body);
+    color: var(--text-primary);
+}
+
+[data-testid="stSidebar"] {
+    background-color: var(--bg-surface);
+    border-right: 1px solid var(--border-subtle);
+}
+
+[data-testid="stSidebar"] > div:first-child {
+    padding-top: 1.5rem;
+}
+
+/* Hide Streamlit's default chrome for a cleaner app feel */
+#MainMenu, footer, header {
+    visibility: hidden;
+}
+
+/* --- Sidebar branding ----------------------------------------------- */
+.sidebar-brand {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    padding: 0 0.25rem 1.25rem 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 1.25rem;
+}
+
+.sidebar-brand .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-purple);
+    box-shadow: 0 0 8px var(--accent-purple-glow);
+}
+
+.sidebar-section-label {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 1rem 0 0.5rem 0.25rem;
+}
+
+/* --- Workspace list items ------------------------------------------- */
+.workspace-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 0.7rem;
+    border-radius: 8px;
+    margin-bottom: 0.2rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    font-size: 0.88rem;
+}
+
+.workspace-item:hover {
+    background-color: var(--bg-surface-hover);
+}
+
+.workspace-item.active {
+    background-color: var(--accent-purple-dim);
+    border-left: 2px solid var(--accent-purple);
+}
+
+.workspace-meta {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 0.1rem;
+}
+
+/* --- Buttons: default Streamlit -> our token system -------------- */
+div.stButton > button {
+    background-color: var(--bg-surface-hover);
+    color: var(--text-primary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.85rem;
+    transition: all 0.15s ease;
+}
+
+div.stButton > button:hover {
+    border-color: var(--accent-purple);
+    color: var(--accent-purple);
+}
+
+div.stButton > button:focus {
+    box-shadow: 0 0 0 2px var(--accent-purple-glow);
+}
+
+/* Primary action buttons (send, create workspace) get the signature fill */
+div.stButton > button[kind="primary"] {
+    background-color: var(--accent-purple);
+    border: none;
+    color: #0A0A0F;
+    font-weight: 600;
+}
+
+div.stButton > button[kind="primary"]:hover {
+    background-color: #B968FF;
+    color: #0A0A0F;
+}
+
+/* --- Chat message bubbles ---------------------------------------- */
+[data-testid="stChatMessage"] {
+    background-color: transparent;
+    padding: 0.4rem 0;
+}
+
+.chat-bubble {
+    padding: 0.85rem 1.1rem;
+    border-radius: 14px;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    max-width: 85%;
+}
+
+.chat-bubble.user {
+    background-color: var(--bg-surface-hover);
+    border: 1px solid var(--border-subtle);
+    margin-left: auto;
+}
+
+.chat-bubble.assistant {
+    background-color: var(--accent-purple-dim);
+    border: 1px solid rgba(168, 85, 247, 0.25);
+}
+
+/* --- Retrieval pulse: signature element ---------------------------
+   A thin gradient line that sweeps once while the retriever is
+   fetching context, before the first token streams in. This is the
+   one place we spend visual "boldness" -- it maps directly to the
+   MMR retrieval step that happens before generation, rather than
+   being a decorative spinner unconnected to what's happening. */
+@keyframes retrieval-sweep {
+    0%   { background-position: -200% 0; opacity: 0; }
+    15%  { opacity: 1; }
+    85%  { opacity: 1; }
+    100% { background-position: 200% 0; opacity: 0; }
+}
+
+.retrieval-pulse {
+    height: 2px;
+    width: 100%;
+    border-radius: 2px;
+    margin: 0.4rem 0 0.9rem 0;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--accent-purple) 50%,
+        transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: retrieval-sweep 1.1s ease-in-out infinite;
+}
+
+.retrieval-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-family: var(--font-display);
+    letter-spacing: 0.04em;
+    margin-bottom: 0.3rem;
+}
+
+/* --- File uploader ---------------------------------------------------- */
+[data-testid="stFileUploader"] {
+    background-color: var(--bg-surface-hover);
+    border: 1px dashed var(--border-subtle);
+    border-radius: 10px;
+    padding: 0.5rem;
+}
+
+[data-testid="stFileUploader"]:hover {
+    border-color: var(--accent-purple);
+}
+
+/* --- Document chip list ------------------------------------------ */
+.doc-chip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--bg-surface-hover);
+    border: 1px solid var(--border-subtle);
+    border-radius: 7px;
+    padding: 0.4rem 0.6rem;
+    margin-bottom: 0.3rem;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+.doc-chip .doc-name {
+    color: var(--text-primary);
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 140px;
+}
+
+/* --- Chat input ------------------------------------------------------- */
+[data-testid="stChatInput"] {
+    background-color: var(--bg-surface);
+    border-top: 1px solid var(--border-subtle);
+}
+
+[data-testid="stChatInput"] textarea {
+    background-color: var(--bg-surface-hover) !important;
+    border: 1px solid var(--border-subtle) !important;
+    color: var(--text-primary) !important;
+    border-radius: 10px !important;
+}
+
+[data-testid="stChatInput"] textarea:focus {
+    border-color: var(--accent-purple) !important;
+    box-shadow: 0 0 0 1px var(--accent-purple-glow) !important;
+}
+
+/* --- Empty state ------------------------------------------------------- */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.empty-state h3 {
+    font-family: var(--font-display);
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.empty-state p {
+    font-size: 0.85rem;
+    max-width: 320px;
+}
+
+/* --- Backend connection banner -------------------------------------- */
+.connection-error {
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #F87171;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    margin-bottom: 1rem;
+}
+
+/* --- Responsive: collapse gracefully on narrow viewports --------- */
+@media (max-width: 640px) {
+    .chat-bubble {
+        max-width: 92%;
+        font-size: 0.88rem;
+    }
+    .doc-chip .doc-name {
+        max-width: 90px;
+    }
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+    .retrieval-pulse {
+        animation: none;
+        opacity: 0.6;
+    }
+}
